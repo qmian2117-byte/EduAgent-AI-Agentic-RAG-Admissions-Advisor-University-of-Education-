@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UniGuide AI | Enterprise Agentic Admissions Advisor (University of Education)</title>
+  <meta name="description" content="Official Enterprise Agentic Admissions Advisor for University of Education (UE), powered by LangGraph, Hybrid RAG, and Safe Computational Tooling.">
+  
+  <!-- Modern Typography from Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome for Premium Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Ambient Glow Effects -->
+  <div class="bg-glow-container">
+    <div class="glow-orb-1"></div>
+    <div class="glow-orb-2"></div>
+  </div>
+
+  <div class="app-container">
+    
+    <!-- Top Header Navigation -->
+    <header class="app-header">
+      <div class="header-brand">
+        <div class="brand-crest">
+          <i class="fa-solid fa-graduation-cap"></i>
+        </div>
+        <div class="brand-text">
+          <h1>UniGuide AI <span class="brand-tag">UE Agentic v2.0</span></h1>
+          <p>University of Education • Official Admissions Advisor</p>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <div class="model-badge" id="modelBadge">
+          <span class="pulse-dot"></span>
+          <span id="activeModelLabel">Groq: llama-3.3-70b / Local RAG</span>
+        </div>
+
+        <button class="header-btn" id="openBenchmarksBtn" title="Run the 4 Project Benchmarks">
+          <i class="fa-solid fa-vial-circle-check" style="color: #38bdf8;"></i>
+          <span>Run Benchmarks</span>
+        </button>
+
+        <button class="header-btn" id="openSettingsBtn" title="Agent Settings & API Keys">
+          <i class="fa-solid fa-sliders"></i>
+          <span>Settings</span>
+        </button>
+
+        <button class="header-btn primary" id="toggleDrawerBtn">
+          <i class="fa-solid fa-book-open"></i>
+          <span>Programs & Tools</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <div class="app-workspace">
+      
+      <!-- Left Sidebar: Session Threads -->
+      <aside class="sidebar-left">
+        <div class="sidebar-header">
+          <button class="new-chat-btn" id="newChatBtn">
+            <i class="fa-solid fa-plus"></i>
+            <span>New Advising Session</span>
+          </button>
+        </div>
+
+        <div class="sidebar-section-title">Conversational Memory Threads</div>
+        <div class="sessions-list" id="sessionsList">
+          <!-- Populated by JavaScript -->
+        </div>
+
+        <div class="sidebar-shortcuts">
+          <div class="sidebar-section-title" style="padding-left: 0;">Quick Topics</div>
+          <div class="shortcut-chip" onclick="window.sendQuickPrompt('What are the eligibility criteria for BS Computer Science and BSAI?')">
+            <i class="fa-solid fa-laptop-code" style="color: #38bdf8;"></i>
+            <span>BSCS & BSAI Eligibility</span>
+          </div>
+          <div class="shortcut-chip" onclick="window.sendQuickPrompt('What is the semester fee for BSCS and what will it be with 50% Merit Scholarship?')">
+            <i class="fa-solid fa-calculator" style="color: #a855f7;"></i>
+            <span>Fee & Merit Scholarship</span>
+          </div>
+          <div class="shortcut-chip" onclick="window.sendQuickPrompt('What are the admission deadlines for Fall 2026?')">
+            <i class="fa-solid fa-calendar-days" style="color: #10b981;"></i>
+            <span>Fall 2026 Deadlines</span>
+          </div>
+          <div class="shortcut-chip" onclick="window.sendQuickPrompt('Can I apply for an MBBS or BDS degree at University of Education?')">
+            <i class="fa-solid fa-shield-halved" style="color: #f43f5e;"></i>
+            <span>Out-of-Scope (MBBS)</span>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Center Main Chat Arena -->
+      <main class="chat-main">
+        
+        <div class="chat-history" id="chatHistory">
+          <!-- Initial Welcome Message -->
+          <div class="message-row bot">
+            <div class="avatar bot">
+              <i class="fa-solid fa-robot"></i>
+            </div>
+            <div class="message-bubble">
+              <div class="message-author">
+                <span>UniGuide AI</span>
+                <span style="font-size: 0.65rem; background: rgba(56,189,248,0.15); color: #38bdf8; padding: 2px 6px; border-radius: 4px;">Senior Advisor</span>
+              </div>
+              <div class="message-content">
+                Welcome to <strong>University of Education (UE)</strong>! I am your AI Admissions Advisor, equipped with the official 2026–2027 Admissions Knowledge Base, AST-safe fee calculator, and conversational session memory.
+                <br><br>
+                How can I assist your academic journey today? You can inquire about our undergraduate and graduate programs (BSCS, BSAI, BSSE, BBA, MSCS), fee structures, merit scholarships, entry test criteria, or hostel facilities.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Starters Carousel -->
+        <div class="quick-starters" id="quickStarters">
+          <button class="starter-btn" onclick="window.sendQuickPrompt('What are the eligibility criteria for BS Computer Science and BSAI? Is there an entry test waiver?')">
+            <i class="fa-solid fa-graduation-cap"></i> Eligibility & HAT Waiver
+          </button>
+          <button class="starter-btn" onclick="window.sendQuickPrompt('What is the semester fee for BSCS at University of Education? If I qualify for the 50% Merit Scholarship, what will be my tuition fee?')">
+            <i class="fa-solid fa-percent"></i> BSCS Fee + 50% Merit Aid
+          </button>
+          <button class="starter-btn" onclick="window.sendQuickPrompt('My younger sister is also enrolling at University of Education. What sibling discount applies, and what would my remaining fee be for that program with the sibling discount applied instead?')">
+            <i class="fa-solid fa-people-roof"></i> Sibling Discount (Memory Recall)
+          </button>
+          <button class="starter-btn" onclick="window.sendQuickPrompt('Can I apply for an MBBS or BDS medical degree at University of Education for Fall 2026?')">
+            <i class="fa-solid fa-user-doctor"></i> Medical Degree Check
+          </button>
+        </div>
+
+        <!-- Input Box -->
+        <div class="chat-input-wrapper">
+          <form class="chat-input-box" id="chatForm" onsubmit="return false;">
+            <textarea 
+              class="chat-input-field" 
+              id="userInput" 
+              rows="1" 
+              placeholder="Ask UniGuide AI anything about University of Education admissions, fees, scholarships, or requirements..."
+              onkeydown="if(event.key === 'Enter' && !event.shiftKey){ event.preventDefault(); window.handleSendMessage(); }"></textarea>
+            
+            <button type="button" class="send-btn" id="sendBtn" onclick="window.handleSendMessage()">
+              <i class="fa-solid fa-arrow-up"></i>
+            </button>
+          </form>
+        </div>
+
+      </main>
+
+      <!-- Right Sidebar: Programs, Calculator & LangGraph Architecture -->
+      <aside class="sidebar-right" id="sidebarRight">
+        
+        <div class="drawer-tabs">
+          <button class="tab-btn active" onclick="window.switchTab('programsTab', this)">
+            <i class="fa-solid fa-graduation-cap"></i> Programs
+          </button>
+          <button class="tab-btn" onclick="window.switchTab('calcTab', this)">
+            <i class="fa-solid fa-calculator"></i> Fee Calc
+          </button>
+          <button class="tab-btn" onclick="window.switchTab('graphTab', this)">
+            <i class="fa-solid fa-diagram-project"></i> Graph
+          </button>
+        </div>
+
+        <div class="tab-content-container">
+          
+          <!-- Tab 1: Programs Catalog -->
+          <div class="tab-panel active" id="programsTab">
+            
+            <div class="program-card">
+              <div class="program-header">
+                <div class="program-title-wrap">
+                  <h4>BS Computer Science</h4>
+                  <span>4 Years • 8 Semesters • Computing</span>
+                </div>
+                <i class="fa-solid fa-chevron-right" style="font-size: 0.75rem; color: #64748b;"></i>
+              </div>
+              <div class="program-details">
+                <div><strong>Eligibility:</strong> Intermediate (Pre-Eng/ICS) or A-Levels with Math ≥ 50%</div>
+                <div class="fee-row"><span>Admission Fee:</span><span class="fee-val">PKR 20,000</span></div>
+                <div class="fee-row"><span>Semester Fee:</span><span class="fee-val">PKR 85,000</span></div>
+                <div class="fee-row"><span>Security Deposit:</span><span class="fee-val">PKR 10,000 (Refundable)</span></div>
+                <div class="fee-row"><span>Total 1st Semester:</span><span class="fee-val" style="color: #34d399;">PKR 115,000</span></div>
+              </div>
+            </div>
+
+            <div class="program-card">
+              <div class="program-header">
+                <div class="program-title-wrap">
+                  <h4>BS Artificial Intelligence</h4>
+                  <span>4 Years • 8 Semesters • Machine Learning & AI</span>
+                </div>
+                <i class="fa-solid fa-chevron-right" style="font-size: 0.75rem; color: #64748b;"></i>
+              </div>
+              <div class="program-details">
+                <div><strong>Eligibility:</strong> Intermediate (Pre-Eng/ICS) or A-Levels with Math ≥ 50%</div>
+                <div class="fee-row"><span>Admission Fee:</span><span class="fee-val">PKR 20,000</span></div>
+                <div class="fee-row"><span>Semester Fee:</span><span class="fee-val">PKR 90,000</span></div>
+                <div class="fee-row"><span>Security Deposit:</span><span class="fee-val">PKR 10,000</span></div>
+                <div class="fee-row"><span>Total 1st Semester:</span><span class="fee-val" style="color: #34d399;">PKR 120,000</span></div>
+              </div>
+            </div>
+
+            <div class="program-card">
+              <div class="program-header">
+                <div class="program-title-wrap">
+                  <h4>BS Software Engineering</h4>
+                  <span>4 Years • 8 Semesters • Software Architecture</span>
+                </div>
+                <i class="fa-solid fa-chevron-right" style="font-size: 0.75rem; color: #64748b;"></i>
+              </div>
+              <div class="program-details">
+                <div><strong>Eligibility:</strong> Intermediate (Pre-Eng/ICS) or A-Levels with Math ≥ 50%</div>
+                <div class="fee-row"><span>Admission Fee:</span><span class="fee-val">PKR 20,000</span></div>
+                <div class="fee-row"><span>Semester Fee:</span><span class="fee-val">PKR 85,000</span></div>
+                <div class="fee-row"><span>Security Deposit:</span><span class="fee-val">PKR 10,000</span></div>
+                <div class="fee-row"><span>Total 1st Semester:</span><span class="fee-val" style="color: #34d399;">PKR 115,000</span></div>
+              </div>
+            </div>
+
+            <div class="program-card">
+              <div class="program-header">
+                <div class="program-title-wrap">
+                  <h4>BS Business Administration (BBA)</h4>
+                  <span>4 Years • 8 Semesters • Business</span>
+                </div>
+                <i class="fa-solid fa-chevron-right" style="font-size: 0.75rem; color: #64748b;"></i>
+              </div>
+              <div class="program-details">
+                <div><strong>Eligibility:</strong> Intermediate (any discipline) or A-Levels ≥ 45%</div>
+                <div class="fee-row"><span>Admission Fee:</span><span class="fee-val">PKR 15,000</span></div>
+                <div class="fee-row"><span>Semester Fee:</span><span class="fee-val">PKR 70,000</span></div>
+                <div class="fee-row"><span>Security Deposit:</span><span class="fee-val">PKR 10,000</span></div>
+                <div class="fee-row"><span>Total 1st Semester:</span><span class="fee-val" style="color: #34d399;">PKR 95,000</span></div>
+              </div>
+            </div>
+
+            <div class="program-card">
+              <div class="program-header">
+                <div class="program-title-wrap">
+                  <h4>MS Computer Science</h4>
+                  <span>2 Years • 4 Semesters • Graduate</span>
+                </div>
+                <i class="fa-solid fa-chevron-right" style="font-size: 0.75rem; color: #64748b;"></i>
+              </div>
+              <div class="program-details">
+                <div><strong>Eligibility:</strong> 4-year BS in CS/SE/IT with CGPA ≥ 2.5/4.0</div>
+                <div class="fee-row"><span>Admission Fee:</span><span class="fee-val">PKR 25,000</span></div>
+                <div class="fee-row"><span>Semester Fee:</span><span class="fee-val">PKR 95,000</span></div>
+                <div class="fee-row"><span>Security Deposit:</span><span class="fee-val">PKR 10,000</span></div>
+                <div class="fee-row"><span>Total 1st Semester:</span><span class="fee-val" style="color: #34d399;">PKR 130,000</span></div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Tab 2: Interactive Safe Calculator -->
+          <div class="tab-panel" id="calcTab">
+            <div class="calc-card">
+              <div class="calc-title">
+                <i class="fa-solid fa-calculator" style="color: #38bdf8;"></i>
+                <span>AST-Safe Fee & Aid Calculator</span>
+              </div>
+              
+              <div class="calc-input-group">
+                <label class="calc-label">Select Degree Program</label>
+                <select class="calc-select" id="calcProgramSelect" onchange="window.updateFeeCalculation()">
+                  <option value="85000" data-adm="20000">BS Computer Science (PKR 85,000/sem)</option>
+                  <option value="90000" data-adm="20000">BS Artificial Intelligence (PKR 90,000/sem)</option>
+                  <option value="85000" data-adm="20000">BS Software Engineering (PKR 85,000/sem)</option>
+                  <option value="70000" data-adm="15000">BS Business Admin (BBA) (PKR 70,000/sem)</option>
+                  <option value="95000" data-adm="25000">MS Computer Science (PKR 95,000/sem)</option>
+                </select>
+              </div>
+
+              <div class="calc-input-group">
+                <label class="calc-label">Scholarship / Discount Type</label>
+                <select class="calc-select" id="calcDiscountSelect" onchange="window.updateFeeCalculation()">
+                  <option value="0">None (Full Tuition Fee)</option>
+                  <option value="0.50">Merit Scholarship (50% Tuition Waiver)</option>
+                  <option value="0.10">Sibling Discount (10% Tuition Waiver)</option>
+                  <option value="0.25">Sports Scholarship (25% Waiver)</option>
+                  <option value="1.00">Need-Based Scholarship (100% Waiver)</option>
+                </select>
+              </div>
+
+              <div class="calc-input-group">
+                <label class="calc-label">Include 1st-Time One-Off Fees?</label>
+                <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; color: #cbd5e1; cursor: pointer;">
+                  <input type="checkbox" id="calcIncludeOneOff" checked onchange="window.updateFeeCalculation()">
+                  Admission Fee + Refundable Security (PKR 10,000)
+                </label>
+              </div>
+
+              <div class="calc-result-box">
+                <div class="calc-result-row">
+                  <span>Base Semester Tuition:</span>
+                  <span id="resBaseFee" style="font-family: var(--font-mono); font-weight: 600;">PKR 85,000</span>
+                </div>
+                <div class="calc-result-row">
+                  <span>Scholarship Deduction:</span>
+                  <span id="resDeduction" style="font-family: var(--font-mono); color: #f43f5e;">- PKR 0</span>
+                </div>
+                <div class="calc-result-row">
+                  <span>Net Tuition Payable:</span>
+                  <span id="resNetTuition" style="font-family: var(--font-mono); color: #38bdf8;">PKR 85,000</span>
+                </div>
+                <div class="calc-result-row">
+                  <span>One-Off Charges (Adm + Security):</span>
+                  <span id="resOneOff" style="font-family: var(--font-mono);">PKR 30,000</span>
+                </div>
+                <div class="calc-result-total">
+                  <span>Total Payable:</span>
+                  <span id="resGrandTotal">PKR 115,000</span>
+                </div>
+              </div>
+
+              <button class="header-btn primary" style="width: 100%; margin-top: 1rem; justify-content: center;" onclick="window.askAgentCurrentCalculation()">
+                <i class="fa-solid fa-message"></i>
+                <span>Ask Agent to Explain Breakdown</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Tab 3: LangGraph Architecture Visualizer -->
+          <div class="tab-panel" id="graphTab">
+            <div class="calc-card">
+              <div class="calc-title">
+                <i class="fa-solid fa-diagram-project" style="color: #a855f7;"></i>
+                <span>LangGraph ReAct Architecture</span>
+              </div>
+              
+              <div style="font-size: 0.78rem; color: #94a3b8; line-height: 1.5; margin-bottom: 1rem;">
+                StateGraph orchestration with MemorySaver session checkpointing and tool feedback loops.
+              </div>
+
+              <!-- Visual Flow Nodes -->
+              <div style="display: flex; flex-direction: column; gap: 0.65rem; font-family: var(--font-mono); font-size: 0.75rem;">
+                
+                <div style="padding: 0.55rem; background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 6px; color: #38bdf8; text-align: center;">
+                  [START NODE] • Student Input
+                </div>
+
+                <div style="text-align: center; color: #64748b;"><i class="fa-solid fa-arrow-down"></i></div>
+
+                <div style="padding: 0.75rem; background: rgba(99, 102, 241, 0.15); border: 1px solid rgba(99, 102, 241, 0.4); border-radius: 6px; color: #c7d2fe;">
+                  <div style="font-weight: 700; margin-bottom: 0.2rem; display: flex; justify-content: space-between;">
+                    <span>AGENT NODE (ReAct LLM)</span>
+                    <span style="color: #a855f7;">Groq Cloud</span>
+                  </div>
+                  <div style="font-size: 0.68rem; color: #94a3b8;">
+                    • MemorySaver (thread_id context)<br>
+                    • Institutional Guardrails (Zero-Hallucination)<br>
+                    • Evaluates if Tool Execution Needed
+                  </div>
+                </div>
+
+                <div style="text-align: center; color: #64748b;"><i class="fa-solid fa-arrows-split-up-and-left"></i> conditional_edges</div>
+
+                <div style="padding: 0.75rem; background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.35); border-radius: 6px; color: #6ee7b7;">
+                  <div style="font-weight: 700; margin-bottom: 0.3rem;">TOOLNODE (3 Registered Tools)</div>
+                  <div style="font-size: 0.68rem; color: #cbd5e1; display: flex; flex-direction: column; gap: 0.25rem;">
+                    <div>1. <code>university_rag_search</code> (FAISS PDF Docs)</div>
+                    <div>2. <code>safe_calculator</code> (AST Fee Math)</div>
+                    <div>3. <code>university_program_lookup</code> (In-Memory)</div>
+                  </div>
+                </div>
+
+                <div style="text-align: center; color: #64748b;"><i class="fa-solid fa-arrow-down"></i> loop back to Agent</div>
+
+                <div style="padding: 0.55rem; background: rgba(168, 85, 247, 0.12); border: 1px solid rgba(168, 85, 247, 0.35); border-radius: 6px; color: #d8b4fe; text-align: center;">
+                  [END NODE] • Synthesized Verified Response
+                </div>
+
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+
+      </aside>
+
+    </div>
+
+  </div>
+
+  <!-- Benchmarks Modal -->
+  <div class="modal-backdrop" id="benchmarksModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>
+          <i class="fa-solid fa-vial-circle-check" style="color: #38bdf8;"></i>
+          <span>UniGuide AI Benchmark Suite</span>
+        </h3>
+        <button class="modal-close-btn" onclick="window.closeModal('benchmarksModal')">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <p>
+          Execute the 4 production verification scenarios defined in <code>Agentic.ipynb</code> to test RAG retrieval, AST math reasoning, multi-turn memory continuity, and hallucination guardrails.
+        </p>
+
+        <button class="header-btn primary" id="runAllBenchmarksBtn" style="justify-content: center; padding: 0.75rem;" onclick="window.executeAllBenchmarks()">
+          <i class="fa-solid fa-play"></i>
+          <span>Run All 4 Scenarios Automatically</span>
+        </button>
+
+        <!-- Scenario 1 -->
+        <div class="benchmark-card" id="bmCard1">
+          <div class="benchmark-header">
+            <span>Scenario 1: Single-Hop RAG (Eligibility & HAT Waiver)</span>
+            <span class="benchmark-status pending" id="bmStatus1">Pending</span>
+          </div>
+          <div style="font-size: 0.75rem; color: #94a3b8;">
+            Prompt: "What are the eligibility criteria for BS Computer Science and BSAI? Is there an entry test waiver?"
+          </div>
+          <div class="benchmark-output" id="bmOutput1" style="display: none;"></div>
+        </div>
+
+        <!-- Scenario 2 -->
+        <div class="benchmark-card" id="bmCard2">
+          <div class="benchmark-header">
+            <span>Scenario 2: Multi-Step Reasoning + Safe Math</span>
+            <span class="benchmark-status pending" id="bmStatus2">Pending</span>
+          </div>
+          <div style="font-size: 0.75rem; color: #94a3b8;">
+            Prompt: "What is the semester fee for BSCS at University of Education? If I qualify for the 50% Merit Scholarship, what will be my tuition fee?"
+          </div>
+          <div class="benchmark-output" id="bmOutput2" style="display: none;"></div>
+        </div>
+
+        <!-- Scenario 3 -->
+        <div class="benchmark-card" id="bmCard3">
+          <div class="benchmark-header">
+            <span>Scenario 3: Conversational Memory Continuity</span>
+            <span class="benchmark-status pending" id="bmStatus3">Pending</span>
+          </div>
+          <div style="font-size: 0.75rem; color: #94a3b8;">
+            Prompt: "My younger sister is also enrolling at University of Education. What sibling discount applies, and what would my remaining fee be for that program with the sibling discount applied instead?"
+          </div>
+          <div class="benchmark-output" id="bmOutput3" style="display: none;"></div>
+        </div>
+
+        <!-- Scenario 4 -->
+        <div class="benchmark-card" id="bmCard4">
+          <div class="benchmark-header">
+            <span>Scenario 4: Guardrail & Hallucination Resistance</span>
+            <span class="benchmark-status pending" id="bmStatus4">Pending</span>
+          </div>
+          <div style="font-size: 0.75rem; color: #94a3b8;">
+            Prompt: "Can I apply for an MBBS or BDS medical degree at University of Education for Fall 2026?"
+          </div>
+          <div class="benchmark-output" id="bmOutput4" style="display: none;"></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings Modal -->
+  <div class="modal-backdrop" id="settingsModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>
+          <i class="fa-solid fa-sliders" style="color: #a855f7;"></i>
+          <span>Agent Configuration & LLM Keys</span>
+        </h3>
+        <button class="modal-close-btn" onclick="window.closeModal('settingsModal')">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        
+        <div class="calc-input-group">
+          <label class="calc-label">Advising Engine Mode</label>
+          <select class="calc-select" id="engineModeSelect" onchange="window.handleEngineModeChange()">
+            <option value="auto">Hybrid Intelligent Engine (Cloud Groq LLM + Local Neural Fallback)</option>
+            <option value="groq">Groq Cloud LLM Direct (Requires API Key)</option>
+            <option value="local">Local Neural RAG Engine (Zero API Key Needed)</option>
+          </select>
+        </div>
+
+        <div class="calc-input-group" id="groqKeyGroup">
+          <label class="calc-label">Groq Cloud API Key</label>
+          <input 
+            type="password" 
+            class="calc-text-input" 
+            id="groqApiKeyInput" 
+            placeholder="gsk_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" 
+            value="">
+          <div style="font-size: 0.72rem; color: #64748b; margin-top: 0.3rem;">
+            Keys are securely stored in your local browser session and never sent to external third parties.
+          </div>
+        </div>
+
+        <div class="calc-input-group">
+          <label class="calc-label">Groq Target Model</label>
+          <select class="calc-select" id="groqModelSelect">
+            <option value="llama-3.3-70b-versatile">llama-3.3-70b-versatile (Recommended)</option>
+            <option value="llama-3.1-8b-instant">llama-3.1-8b-instant (Fastest)</option>
+            <option value="openai/gpt-oss-20b">openai/gpt-oss-20b (Notebook Default)</option>
+            <option value="openai/gpt-oss-120b">openai/gpt-oss-120b</option>
+            <option value="llama3-70b-8192">llama3-70b-8192</option>
+          </select>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1rem;">
+          <button class="header-btn" onclick="window.closeModal('settingsModal')">Cancel</button>
+          <button class="header-btn primary" onclick="window.saveSettings()">Save Settings</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Logic Script -->
+  <script src="app.js"></script>
+</body>
+</html>
